@@ -1,0 +1,280 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports) {
+
+	(function(win, $) {
+
+	    var winW = $(window).width();
+	    var winH = $(window).height();
+	    var score = 0;
+	    var QingLvGroup;
+	    var config = {
+	        selfPool:40,
+	        selfPic:'qinglvdog',
+	        rate:0.3,
+	        maxSpeed:300,
+	        minSpeed:50
+	    }
+	    var dogConfig = {
+	        selfPool:20,
+	        selfPic:'dog',
+	        rate:0.3,
+	        maxSpeed:300,
+	        minSpeed:50,
+	        punished:true
+	    }
+
+	    /***********************/
+	    function QingLv(config){
+	        this.init = function(){
+	            this.config = config;
+	            QingLvGroup = game.add.group();
+	            QingLvGroup.enableBody = true;
+	            QingLvGroup.createMultiple(config.selfPool, config.selfPic);
+	            QingLvGroup.setAll('anchor.y',1)
+	            QingLvGroup.setAll('outOfBoundsKill', true);
+	            QingLvGroup.setAll('checkWorldBounds', true);
+	            this.maxWidth = game.width - 80;
+
+	            game.time.events.loop(Phaser.Timer.SECOND * config.rate, this.createQL, this);
+
+	        };
+	        this.createQL = function(){
+	            var e = QingLvGroup.getFirstExists(false);
+	            
+	            if(e) {
+	                var ram= Math.random();
+	                ram =ram<0.5?ram+=0.5: ram;
+	                e.loadTexture(this.config.selfPic)
+	                e.alpha = 1;
+	                e.scale.setTo(ram);
+	                e.reset(game.rnd.integerInRange(0, this.maxWidth), 0)
+	                e.body.velocity.y = game.rnd.integerInRange(config.minSpeed, config.maxSpeed);
+	                e.inputEnabled = true;
+	                e.events.onInputDown.add(this.hitted, this)
+	            }
+	        };
+	        this.hitted = function(sprite){
+	            score++;
+	            sprite.inputEnabled = false;
+	            var anim = sprite.animations.add('hitted');
+	            sprite.play('hitted', 100, false);
+	            anim.onComplete.add(this.fade, this, sprite)
+	        };
+	        this.fade = function(sprite){
+	            var tween = game.add.tween(sprite).to({alpha:0}, 300, 'Linear', true)
+	             tween.onComplete.add(this.killed, this, sprite);
+	        };
+	        this.killed = function(sprite){
+	            sprite.kill();
+	        }
+	    }
+
+	    function Dog(config){
+	        this.init = function(){
+	            this.config = config;
+	            this.DogGroup = game.add.group();
+	            this.DogGroup.enableBody = true;
+	            this.DogGroup.createMultiple(config.selfPool, config.selfPic);
+	            this.DogGroup.setAll('anchor.y',1)
+	            this.DogGroup.setAll('outOfBoundsKill', true);
+	            this.DogGroup.setAll('checkWorldBounds', true);
+	            this.maxWidth = game.width - 80;
+
+	            game.time.events.loop(Phaser.Timer.SECOND * config.rate, this.createDog, this);
+
+	        };
+	        this.createDog = function(){
+	            var e = this.DogGroup.getFirstExists(false);
+	            
+	            if(e) {
+	                var ram= Math.random();
+	                ram =ram<0.5?ram+=0.5: ram;
+	                e.loadTexture(this.config.selfPic)
+	                e.alpha = 1;
+	                e.scale.setTo(ram);
+	                e.reset(game.rnd.integerInRange(0, this.maxWidth), 0)
+	                e.body.velocity.y = game.rnd.integerInRange(config.minSpeed, config.maxSpeed);
+	            }
+	        };
+	    }
+
+	    /***********************/
+
+	    var game = new Phaser.Game(winW, winH, Phaser.AUTO, '');
+
+	    game.States = {};
+
+
+	    game.States.boot = function() {
+	        this.preload = function() {
+	            if (typeof(GAME) !== "undefined") {
+	                this.load.baseURL = GAME + "/";
+	            }
+	            if (!game.device.desktop) {
+	                this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+	                this.scale.forcePortrait = true;
+	                this.scale.refresh();
+	            }
+	        };
+	        this.create = function() {
+	            game.state.start('preload');
+	        };
+	    };
+
+	    game.States.preload = function() {
+	        this.preload = function() {
+	            game.load.spritesheet('daojishi', 'assets/img/daojishi.png', 200,200,3);
+	            game.load.image('bg', 'assets/img/bg.png');
+	            game.load.spritesheet('qinglvdog', 'assets/img/qinglvdog.png', 80,77,2);
+	            game.load.image('dog', 'assets/img/dog.png');
+	            // game.load.image('logo', 'assets/img/logo.png');
+	            game.load.image('shengyu', 'assets/img/shengyu.png');
+	            game.load.image('chaisan', 'assets/img/chaisan.png');
+	            game.load.bitmapFont('number', 'assets/img/number.png', 'assets/img/number.xml');
+	        };
+	        this.create = function() {
+	            game.state.start('main');
+	        };
+	    };
+
+	    game.States.main = function() {
+	        this.create = function() {
+	            // 剩余时间
+	            this.leftTime = 15;
+
+	            // 物理系统
+	            game.physics.startSystem(Phaser.Physics.ARCADE);
+
+	            // 背景图
+	            var bg = game.add.sprite(0, 0, 'bg');
+	            bg.width = game.width;
+	            bg.height = game.height;
+
+	            // logo
+	            // var logo =game.add.sprite(game.world.centerX - game.cache.getImage('logo').width/2*0.6, 0, 'logo')
+	            // logo.scale.setTo(0.6)
+
+	            // 开始游戏倒计时
+	            var daojishi = game.add.sprite(game.world.centerX -100, game.world.centerY - 100, 'daojishi');
+	            var anim = daojishi.animations.add('daojishi');
+	            daojishi.play('daojishi', 1, false);
+	            anim.onComplete.add(this.startGame, this, daojishi);
+
+	            // 游戏结束倒计时
+	            var shengyu = game.add.sprite(0,0,'shengyu');
+	            shengyu.fixedToCamera = true;
+	            shengyu.scale.setTo(0.75)
+	            shengyu.cameraOffset.setTo(game.camera.width - 150, game.camera.height - 85);
+	            // 已拆散
+	            var chaisan = game.add.sprite(0,0,'chaisan');
+	            chaisan.fixedToCamera = true;
+	            chaisan.scale.setTo(0.75)
+	            chaisan.cameraOffset.setTo(game.camera.width - 150, game.camera.height - 60);
+	            // 剩余时间
+	            this.leftTimeText = game.add.bitmapText(0, 0, 'number', '00:15', 26);
+	            this.leftTimeText.fixedToCamera = true;
+	            this.leftTimeText.cameraOffset.setTo(game.camera.width - 80, game.camera.height - 88);
+	            // 拆散数
+	            this.chaiisanNum = game.add.bitmapText(0, 0, 'number', score.toString(), 26);
+	            this.chaiisanNum.fixedToCamera = true;
+	            this.chaiisanNum.cameraOffset.setTo(game.camera.width - 80, game.camera.height - 64);
+	            
+	        };
+	        this.update = function(){
+	            this.chaiisanNum.text = score.toString();
+	        }
+	        this.startGame = function(daojishi){
+	            daojishi.visible = false;
+	            this.createQingLv();
+	            game.time.events.repeat(Phaser.Timer.SECOND , 15, this.refreshTime, this)
+	        };
+	        this.createQingLv = function(){
+	            
+	            this.qinglv = new QingLv(config);
+	            this.qinglv.init();
+	            this.qinglv = new QingLv(config);
+	            this.qinglv.init();
+	            // this.qinglv = new QingLv(config);
+	            // this.qinglv.init();
+	            // this.qinglv = new QingLv(config);
+	            // this.qinglv.init();
+	            this.dog = new Dog(dogConfig);
+	            this.dog.init();
+	        };
+	        this.refreshTime = function(){
+	            this.leftTime--;
+	             var tem = this.leftTime;
+	            if(this.leftTime <10) {
+	                tem = '0' + this.leftTime;
+	            }
+	            this.leftTimeText.text = '00:'+tem;
+	            if(this.leftTime === 0) {
+	                game.paused = true;
+	                window.location.href = './result.html'
+	                // game.state.start('over');
+	            }
+	        }
+	    };
+
+
+	    game.States.over = function() {
+	        this.create = function() {
+	            
+	        };
+	    }
+
+	    game.state.add('boot', game.States.boot);
+	    game.state.add('preload', game.States.preload);
+	    game.state.add('main', game.States.main);
+	    game.state.add('over', game.States.over);
+
+	    game.state.start('boot');
+
+	})(window, jQuery);
+
+
+/***/ }
+/******/ ]);
