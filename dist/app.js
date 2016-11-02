@@ -53,7 +53,7 @@
 	    var config = {
 	        selfPool:40,
 	        selfPic:'qinglvdog',
-	        rate:0.3,
+	        rate:0.5,
 	        maxSpeed:300,
 	        minSpeed:50
 	    }
@@ -64,6 +64,12 @@
 	        maxSpeed:300,
 	        minSpeed:50,
 	        punished:true
+	    }
+	    var time = 25;
+
+	    var radio = winW/375;
+	    function rfuc(n){
+	        return n*radio;
 	    }
 
 	    /***********************/
@@ -85,11 +91,12 @@
 	            var e = QingLvGroup.getFirstExists(false);
 	            
 	            if(e) {
+	                // e.events.onInputDown.removeAll();
 	                var ram= Math.random();
 	                ram =ram<0.5?ram+=0.5: ram;
 	                e.loadTexture(this.config.selfPic)
 	                e.alpha = 1;
-	                e.scale.setTo(ram);
+	                e.scale.setTo(rfuc(ram));
 	                e.reset(game.rnd.integerInRange(0, this.maxWidth), 0)
 	                e.body.velocity.y = game.rnd.integerInRange(config.minSpeed, config.maxSpeed);
 	                e.inputEnabled = true;
@@ -160,6 +167,7 @@
 	            }
 	        };
 	        this.create = function() {
+	            game.stage.backgroundColor = '#F6DE8C';
 	            game.state.start('preload');
 	        };
 	    };
@@ -183,7 +191,7 @@
 	    game.States.main = function() {
 	        this.create = function() {
 	            // 剩余时间
-	            this.leftTime = 15;
+	            this.leftTime = time;
 
 	            // 物理系统
 	            game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -214,7 +222,7 @@
 	            chaisan.scale.setTo(0.75)
 	            chaisan.cameraOffset.setTo(game.camera.width - 150, game.camera.height - 60);
 	            // 剩余时间
-	            this.leftTimeText = game.add.bitmapText(0, 0, 'number', '00:15', 26);
+	            this.leftTimeText = game.add.bitmapText(0, 0, 'number', '00:'+this.leftTime, 26);
 	            this.leftTimeText.fixedToCamera = true;
 	            this.leftTimeText.cameraOffset.setTo(game.camera.width - 80, game.camera.height - 88);
 	            // 拆散数
@@ -224,12 +232,12 @@
 	            
 	        };
 	        this.update = function(){
-	            this.chaiisanNum.text = score.toString();
+	            this.chaiisanNum.text = score;
 	        }
 	        this.startGame = function(daojishi){
 	            daojishi.visible = false;
 	            this.createQingLv();
-	            game.time.events.repeat(Phaser.Timer.SECOND , 15, this.refreshTime, this)
+	            game.time.events.repeat(Phaser.Timer.SECOND , this.leftTime, this.refreshTime, this)
 	        };
 	        this.createQingLv = function(){
 	            
@@ -241,8 +249,8 @@
 	            // this.qinglv.init();
 	            // this.qinglv = new QingLv(config);
 	            // this.qinglv.init();
-	            this.dog = new Dog(dogConfig);
-	            this.dog.init();
+	            // this.dog = new Dog(dogConfig);
+	            // this.dog.init();
 	        };
 	        this.refreshTime = function(){
 	            this.leftTime--;
@@ -253,6 +261,9 @@
 	            this.leftTimeText.text = '00:'+tem;
 	            if(this.leftTime === 0) {
 	                game.paused = true;
+	                var b = new Base64(); 
+	                var str = b.encode(score.toString());
+	                localStorage.bbbb=str;
 	                window.location.href = './result.html'
 	                // game.state.start('over');
 	            }
