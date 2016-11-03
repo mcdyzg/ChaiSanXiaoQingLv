@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>拆散小情侣</title>
+    <!--http://www.html5rocks.com/en/mobile/mobifying/-->
+    <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1, minimum-scale=1,maximum-scale=1,target-densitydpi=device-dpi" />
+    <!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <!-- force webkit on 360 -->
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <!-- force edge on IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- force full screen on some browser -->
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <!-- force screen orientation on some browser -->
+    <!-- portrait - 竖屏 landscape - 横屏 -->
+    <meta name="screen-orientation" content="landscape" />
+    <meta name="x5-orientation" content="landscape">
+    <meta name="browsermode" content="application">
+    <meta name="x5-page-mode" content="app">
+    <style type="text/css">
+        body{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="//miz-cdn.b0.upaiyun.com/miz-js-lib/jquery-2.2.3.min.js"></script>
+    <script src="//static.nightwatch.xin/lib/phaser/phaser.min.js"></script>
+    <script src="//miz-cdn.b0.upaiyun.com/miz-js-lib/base.min.js"></script>
+    <script type="text/javascript">
+!function(t){function e(a){if(i[a])return i[a].exports;var s=i[a]={exports:{},id:a,loaded:!1};return t[a].call(s.exports,s,s.exports,e),s.loaded=!0,s.exports}var i={};return e.m=t,e.c=i,e.p="",e(0)}([function(t,e){!function(t,e){function i(t){return t*l}function a(t){this.init=function(){this.config=t,s=c.add.group(),s.enableBody=!0,s.createMultiple(t.selfPool,t.selfPic),s.setAll("anchor.y",1),s.setAll("outOfBoundsKill",!0),s.setAll("checkWorldBounds",!0),this.maxWidth=c.width-80,c.time.events.loop(Phaser.Timer.SECOND*t.rate,this.createQL,this)},this.createQL=function(){var e=s.getFirstExists(!1);if(e){var a=Math.random();a=a<.5?a+=.5:a,e.loadTexture(this.config.selfPic),e.alpha=1,e.scale.setTo(i(a)),e.reset(c.rnd.integerInRange(0,this.maxWidth),0),e.body.velocity.y=c.rnd.integerInRange(t.minSpeed,t.maxSpeed),e.inputEnabled=!0,e.events.onInputDown.add(this.hitted,this)}},this.hitted=function(t){r++,t.inputEnabled=!1;var e=t.animations.add("hitted");t.play("hitted",100,!1),e.onComplete.add(this.fade,this,t)},this.fade=function(t){var e=c.add.tween(t).to({alpha:0},300,"Linear",!0);e.onComplete.add(this.killed,this,t)},this.killed=function(t){t.kill()}}var s,n=e(window).width(),o=e(window).height(),r=0,h={selfPool:40,selfPic:"qinglvdog",rate:.5,maxSpeed:300,minSpeed:50},d=25,l=n/375,c=new Phaser.Game(n,o,Phaser.AUTO,"");c.States={},c.States.boot=function(){this.preload=function(){"undefined"!=typeof GAME&&(this.load.baseURL=GAME+"/"),c.device.desktop||(this.scale.scaleMode=Phaser.ScaleManager.EXACT_FIT,this.scale.forcePortrait=!0,this.scale.refresh())},this.create=function(){c.stage.backgroundColor="#F6DE8C",c.state.start("preload")}},c.States.preload=function(){this.preload=function(){c.load.spritesheet("daojishi","assets/img/daojishi.png",200,200,3),c.load.image("bg","assets/img/bg.png"),c.load.spritesheet("qinglvdog","assets/img/qinglvdog.png",80,77,2),c.load.image("dog","assets/img/dog.png"),c.load.image("shengyu","assets/img/shengyu.png"),c.load.image("chaisan","assets/img/chaisan.png"),c.load.bitmapFont("number","assets/img/number.png","assets/img/number.xml")},this.create=function(){c.state.start("main")}},c.States.main=function(){this.create=function(){this.leftTime=d,c.physics.startSystem(Phaser.Physics.ARCADE);var t=c.add.sprite(0,0,"bg");t.width=c.width,t.height=c.height;var e=c.add.sprite(c.world.centerX-100,c.world.centerY-100,"daojishi"),i=e.animations.add("daojishi");e.play("daojishi",1,!1),i.onComplete.add(this.startGame,this,e);var a=c.add.sprite(0,0,"shengyu");a.fixedToCamera=!0,a.scale.setTo(.75),a.cameraOffset.setTo(c.camera.width-150,c.camera.height-85);var s=c.add.sprite(0,0,"chaisan");s.fixedToCamera=!0,s.scale.setTo(.75),s.cameraOffset.setTo(c.camera.width-150,c.camera.height-60),this.leftTimeText=c.add.bitmapText(0,0,"number","00:"+this.leftTime,26),this.leftTimeText.fixedToCamera=!0,this.leftTimeText.cameraOffset.setTo(c.camera.width-80,c.camera.height-88),this.chaiisanNum=c.add.bitmapText(0,0,"number",r.toString(),26),this.chaiisanNum.fixedToCamera=!0,this.chaiisanNum.cameraOffset.setTo(c.camera.width-80,c.camera.height-64)},this.update=function(){this.chaiisanNum.text=r},this.startGame=function(t){t.visible=!1,this.createQingLv(),c.time.events.repeat(Phaser.Timer.SECOND,this.leftTime,this.refreshTime,this)},this.createQingLv=function(){this.qinglv=new a(h),this.qinglv.init(),this.qinglv=new a(h),this.qinglv.init()},this.refreshTime=function(){this.leftTime--;var t=this.leftTime;if(this.leftTime<10&&(t="0"+this.leftTime),this.leftTimeText.text="00:"+t,0===this.leftTime){c.paused=!0;var e=new Base64,i=e.encode(r.toString());localStorage.bbbb=i,window.location.href="./result.html"}}},c.States.over=function(){this.create=function(){}},c.state.add("boot",c.States.boot),c.state.add("preload",c.States.preload),c.state.add("main",c.States.main),c.state.add("over",c.States.over),c.state.start("boot")}(window,jQuery)}]);
+    </script>
+</body>
+
+</html>

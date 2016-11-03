@@ -168,21 +168,23 @@
             // 游戏结束倒计时
             var shengyu = game.add.sprite(0,0,'shengyu');
             shengyu.fixedToCamera = true;
-            shengyu.scale.setTo(0.75)
-            shengyu.cameraOffset.setTo(game.camera.width - 150, game.camera.height - 85);
+            shengyu.scale.setTo(rfuc(0.75))
+            shengyu.cameraOffset.setTo(game.camera.width - rfuc(150), game.camera.height - rfuc(85));
             // 已拆散
             var chaisan = game.add.sprite(0,0,'chaisan');
             chaisan.fixedToCamera = true;
-            chaisan.scale.setTo(0.75)
-            chaisan.cameraOffset.setTo(game.camera.width - 150, game.camera.height - 60);
+            chaisan.scale.setTo(rfuc(0.75))
+            chaisan.cameraOffset.setTo(game.camera.width - rfuc(150), game.camera.height - rfuc(60));
             // 剩余时间
             this.leftTimeText = game.add.bitmapText(0, 0, 'number', '00:'+this.leftTime, 26);
+            this.leftTimeText.scale.setTo(rfuc(1))
             this.leftTimeText.fixedToCamera = true;
-            this.leftTimeText.cameraOffset.setTo(game.camera.width - 80, game.camera.height - 88);
+            this.leftTimeText.cameraOffset.setTo(game.camera.width - rfuc(80), game.camera.height - rfuc(88));
             // 拆散数
             this.chaiisanNum = game.add.bitmapText(0, 0, 'number', score.toString(), 26);
+            this.chaiisanNum.scale.setTo(rfuc(1))
             this.chaiisanNum.fixedToCamera = true;
-            this.chaiisanNum.cameraOffset.setTo(game.camera.width - 80, game.camera.height - 64);
+            this.chaiisanNum.cameraOffset.setTo(game.camera.width - rfuc(80), game.camera.height - rfuc(64));
             
         };
         this.update = function(){
