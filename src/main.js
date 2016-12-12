@@ -4,12 +4,14 @@
     var winH = $(window).height();
     var score = 0;
     var QingLvGroup;
+    var hitNum = 0;
     var config = {
         selfPool:40,
         selfPic:'qinglvdog',
         rate:0.5,
-        maxSpeed:300,
-        minSpeed:50
+        maxSpeed:500,
+        minSpeed:100,
+        max:95
     }
     var dogConfig = {
         selfPool:20,
@@ -45,7 +47,11 @@
             var e = QingLvGroup.getFirstExists(false);
             
             if(e) {
-                // e.events.onInputDown.removeAll();
+                if(hitNum >= config.max) {
+                    return;
+                }
+                hitNum++;
+                e.events.onInputDown.removeAll();
                 var ram= Math.random();
                 ram =ram<0.5?ram+=0.5: ram;
                 e.loadTexture(this.config.selfPic)
@@ -58,7 +64,7 @@
             }
         };
         this.hitted = function(sprite){
-            score++;
+            score+=2;
             sprite.inputEnabled = false;
             var anim = sprite.animations.add('hitted');
             sprite.play('hitted', 100, false);
