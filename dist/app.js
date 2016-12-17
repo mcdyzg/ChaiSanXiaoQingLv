@@ -269,10 +269,10 @@
 	            this.leftTimeText.text = '00:'+tem;
 	            if(this.leftTime === 0) {
 	                game.paused = true;
-	                var b = new Base64(); 
-	                var str = b.encode(score.toString());
-	                localStorage.bbbb=str;
-	                window.location.href = './result.html'
+	                // var b = new Base64(); 
+	                // var str = b.encode(score.toString());
+	                // localStorage.bbbb=str;
+	                // window.location.href = './result.html'
 	                // game.state.start('over');
 	            }
 	        }
